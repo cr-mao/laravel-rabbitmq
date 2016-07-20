@@ -1,0 +1,22 @@
+{
+  "name": "qianka/laravel-rabbitmq",
+  "type": "library",
+  "authors": [
+    {
+      "name": "qianka",
+      "email": "postmaster@qianka.com"
+    }
+  ],
+  "require": {
+		"illuminate/support": "~5",
+		"php-amqplib/php-amqplib": "~2.6",
+		"monolog/monolog": "~1",
+		"php": ">=5.3.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Qianka\\RabbitMQ\\": "src"
+		}
+	},
+	"minimum-stability": "dev"
+}
