@@ -7,12 +7,11 @@ class RabbitMQPublisher {
     protected $logger = null;
 
     protected $broker = null;
-    protected $exchange = null;
     protected $channel = null;
 
     public function __construct(
         $host, $port, $username, $password,
-        $vhost, $heartbeat_interval, $exchange, $logger) {
+        $vhost, $heartbeat_interval, $logger) {
         $inst = new RabbitMQBroker(
             $host,
             $port,
@@ -22,15 +21,14 @@ class RabbitMQPublisher {
             $heartbeat_interval
         );
         $this->broker = $inst;
-        $this->exchange = $exchange;
         $this->logger = $logger;
     }
 
     public function declareExchange (
-        $type, $durable, $auto_delete, $internal) {
+        $exchange, $type, $durable, $auto_delete, $internal) {
         $channel = $this->getChannel();
         $channel->exchange_declare(
-            $this->exchange,
+            $exchange,
             $type,
             false, // passive
             $durable,
@@ -47,7 +45,7 @@ class RabbitMQPublisher {
         return $this->channel;
     }
 
-    public function sendMessage($body, $encode = true) {
+    public function sendMessage($body, $exchange, $routingKey, $encode = true) {
         $payload = $body;
         if ($encode)
             $payload = json_encode($body);
@@ -58,7 +56,7 @@ class RabbitMQPublisher {
             "content_type" => "text/plain",
             "delivery_mode" => 2
         ));
-        $channel->basic_publish($message, $this->exchange);
+        $channel->basic_publish($message, $exchange, $routingKey);
     }
 
     public function destroy() {

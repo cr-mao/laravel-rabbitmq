@@ -25,6 +25,10 @@ class RabbitMQConsumer {
     protected $exclusive = null;
     protected $consumer_tag = null;
 
+    // not implemented yet
+    protected $network_recovery = true;
+    protected $topology_recovery = true;
+
     public function __construct(
         $host, $port, $username, $password,
         $vhost, $heartbeat_interval, $exchange, $queue, $logger) {
@@ -50,6 +54,15 @@ class RabbitMQConsumer {
 
         $this->logger = $logger;
     }
+
+    public function setNetworkRecovery($recover) {
+        $this->network_recovery = $recover;
+    }
+
+    public function setTopologyRecovery($recover) {
+        $this->topology_recovery = $recover;
+    }
+
 
     public function declareExchange (
         $type, $durable, $auto_delete, $internal) {
