@@ -26,12 +26,14 @@ class RabbitMQConsumer {
     protected $consumer_tag = null;
 
     // not implemented yet
-    protected $network_recovery = true;
-    protected $topology_recovery = true;
+    protected $network_recovery = false;
+    protected $topology_recovery = false;
 
     public function __construct(
         $host, $port, $username, $password,
-        $vhost, $heartbeat_interval, $exchange, $queue, $logger) {
+        $vhost, $heartbeat_interval,
+        RabbitMQExchange $exchange,
+        RabbitMQQueue $queue, $logger) {
 
         $this->host = $host;
         $this->port = $port;
@@ -63,39 +65,32 @@ class RabbitMQConsumer {
         $this->topology_recovery = $recover;
     }
 
-
-    public function declareExchange (
-        $type, $durable, $auto_delete, $internal) {
-        $channel = $this->getChannel();
-        $channel->exchange_declare(
-            $this->exchange,
-            $type,
-            false, // passive
-            $durable,
-            $auto_delete,
-            $internal
-        );
-    }
-
-    public function declareQueue (
-        $durable, $exclusive, $auto_delete) {
-        $channel = $this->getChannel();
-        $channel->queue_declare(
-            $this->queue,
-            false, // passive
-            $durable,
-            $exclusive,
-            $auto_delete
-        );
-    }
-
-    public function bindQueue ($exchange, $routing_key) {
+    public function setupTopology() {
         $chan = $this->getChannel();
-        $chan->queue_bind(
-            $this->queue,
-            $exchange,
-            $routing_key
+
+        $chan->exchange_declare(
+            $this->exchange->name,
+            $this->exchange->type,
+            false, // passive
+            $this->exchange->durable,
+            $this->exchange->auto_delete,
+            $this->exchange->internal
         );
+
+        $chan->queue_declare(
+            $this->queue->name,
+            false, // passive
+            $this->queue->durable,
+            $this->queue->exclusive,
+            $this->queue->auto_delete
+        );
+
+        $chan->queue_bind(
+            $this->queue->name,
+            $this->exchange->name,
+            $this->queue->routing_key
+        );
+
     }
 
     public function getChannel() {
@@ -137,6 +132,7 @@ class RabbitMQConsumer {
     public function consume(
         $no_ack, $exclusive, $callback, $consumer_tag = '')
     {
+        $this->setupTopology();
         $this->no_ack = $no_ack;
         $this->exclusive = $exclusive;
         $this->callback = function ($message) use ($callback) {
@@ -150,7 +146,7 @@ class RabbitMQConsumer {
     {
         $chan = $this->getChannel();
         $chan->basic_consume(
-            $this->queue,
+            $this->queue->name,
             $this->consumer_tag,
             false, // no local
             $this->no_ack,
@@ -160,7 +156,7 @@ class RabbitMQConsumer {
         );
     }
 
-    public function blockingConsume($reconnect = true, $interval = 1)
+    public function blockingConsume($interval = 1)
     {
         $chan = $this->getChannel();
         while (count($chan->callbacks)) {
@@ -169,10 +165,15 @@ class RabbitMQConsumer {
             }
             catch(\Exception $e) {
                 $this->logger->warning($e);
-                if ($reconnect) {
+                if ($this->network_recovery) {
                     $this->logger->warning("begin reconnect");
                     sleep($interval);
                     $this->reconnect();
+
+                    if ($this->topology_recovery) {
+                        $this->setupTopology();
+                    }
+
                     $chan = $this->getChannel();
                     $this->_consume();
                     $this->logger->warning("reconnected");

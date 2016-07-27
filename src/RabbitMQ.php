@@ -80,7 +80,7 @@ class RabbitMQ {
     }
 
     public function createPublisher(
-        $exchange, $name = "default", $use_heartbeat = false)
+        $name = "default", $use_heartbeat = false)
     {
         $config = $this->getConnectionConfig($name);
         $host = $config['host'];
@@ -100,14 +100,15 @@ class RabbitMQ {
             $password,
             $vhost,
             $heartbeat_interval,
-            $exchange,
             $this->logger
         );
         return $rv;
     }
 
     public function createConsumer(
-        $exchange, $queue, $name = "default", $use_heartbeat = false)
+        RabbitMQExchange $exchange,
+        RabbitMQQueue $queue,
+        $name = "default", $use_heartbeat = false)
     {
         $config = $this->getConnectionConfig($name);
         $host = $config['host'];

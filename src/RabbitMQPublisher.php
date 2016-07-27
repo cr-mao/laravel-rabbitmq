@@ -24,19 +24,6 @@ class RabbitMQPublisher {
         $this->logger = $logger;
     }
 
-    public function declareExchange (
-        $exchange, $type, $durable, $auto_delete, $internal) {
-        $channel = $this->getChannel();
-        $channel->exchange_declare(
-            $exchange,
-            $type,
-            false, // passive
-            $durable,
-            $auto_delete,
-            $internal
-        );
-    }
-
     public function getChannel() {
         if ($this->channel == null) {
             $amqp = $this->broker->getConnection();
