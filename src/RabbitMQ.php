@@ -134,4 +134,35 @@ class RabbitMQ {
         );
         return $rv;
     }
+
+    public function createConsumerv2(
+        RabbitMQExchange $exchange,
+        RabbitMQQueue $queue,
+        $name = "default", $use_heartbeat = false)
+    {
+        $config = $this->getConnectionConfig($name);
+        $host = $config['host'];
+        $port = $config['port'];
+        $username = $config['username'];
+        $password = $config['password'];
+        $vhost = $config['vhost'];
+        $heartbeat_interval = 0;
+
+        if ($use_heartbeat)
+            $heartbeat_interval = $config['heartbeat_interval'];
+
+        $rv = new RabbitMQConsumerv2(
+            $host,
+            $port,
+            $username,
+            $password,
+            $vhost,
+            $heartbeat_interval,
+            $exchange,
+            $queue,
+            $this->logger
+        );
+        return $rv;
+    }
+
 }

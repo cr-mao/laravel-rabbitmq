@@ -9,7 +9,7 @@
   ],
   "require": {
 		"illuminate/support": "~5",
-		"qianka/php-amqplib": "dev-master#v2.6.3.1",
+		"qianka/php-amqplib": "2.6.3.1",
 		"monolog/monolog": "~1",
 		"php": ">=5.3.0"
 	},
@@ -17,6 +17,5 @@
 		"psr-4": {
 			"Qianka\\RabbitMQ\\": "src"
 		}
-	},
-	"minimum-stability": "dev"
+	}
 }
