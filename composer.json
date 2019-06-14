@@ -9,7 +9,7 @@
   ],
   "require": {
 		"illuminate/support": "~5",
-		"php-amqplib/php-amqplib": "dev-dev",
+        "qianka/php-amqplib": "2.6.3.1",
 		"monolog/monolog": "~1",
 		"php": ">=5.3.0"
 	},
