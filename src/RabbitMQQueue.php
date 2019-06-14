@@ -1,6 +1,8 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
-class RabbitMQQueue {
+class RabbitMQQueue
+{
 
     public $name = null;
     public $durable = false;
@@ -8,8 +10,7 @@ class RabbitMQQueue {
     public $auto_delete = false;
     public $routing_key = null;
 
-    public function __construct(
-        $name, $durable, $exclusive, $auto_delete, $routing_key)
+    public function __construct($name, $durable, $exclusive, $auto_delete, $routing_key)
     {
         $this->name = $name;
         $this->durable = $durable;

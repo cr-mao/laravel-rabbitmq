@@ -1,24 +1,25 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class RabbitMQ {
+class RabbitMQ
+{
 
     protected $config = null;
     protected $instances = null;
 
     protected $logger = null;
 
-    public function __construct ($config)
+    public function __construct($config)
     {
         $this->config = $config;
         $this->instances = [];
         $this->configLogger();
     }
 
-    public function configLogger(
-        $path = "php://stdout", $level = Logger::WARNING)
+    public function configLogger($path = "php://stdout", $level = Logger::WARNING)
     {
         $log = new Logger("laravel-rabbitmq");
         $handler = new StreamHandler($path, $level);
@@ -34,15 +35,12 @@ class RabbitMQ {
     protected function getConnectionConfig($name)
     {
         if (!array_key_exists($name, $this->config['connections'])) {
-            throw new RabbitMQException(
-                "cannot find \"{$name}\" in rabbitmq config");
+            throw new RabbitMQException("cannot find in rabbitmq config");
         }
         return $this->config['connections'][$name];
     }
 
-    public function getConnection(
-        $name = "default",
-        $use_heartbeat = false)
+    public function getConnection($name = "default", $use_heartbeat = false)
     {
         $inst = null;
         $config = $this->getConnectionConfig($name);
@@ -59,8 +57,7 @@ class RabbitMQ {
         $vhost = $config['vhost'];
         $heartbeat_interval = 0;
 
-        if ($use_heartbeat)
-            $heartbeat_interval = $config['heartbeat_interval'];
+        if ($use_heartbeat) $heartbeat_interval = $config['heartbeat_interval'];
 
         $inst = new RabbitMQBroker(
             $host,
@@ -75,12 +72,12 @@ class RabbitMQ {
         return $inst->getConnection();
     }
 
-    public function destroyConnection($name = "default") {
+    public function destroyConnection($name = "default")
+    {
         unset($this->instances[$name]);
     }
 
-    public function createPublisher(
-        $name = "default", $use_heartbeat = false)
+    public function createPublisher($name = "default", $use_heartbeat = false)
     {
         $config = $this->getConnectionConfig($name);
         $host = $config['host'];
@@ -90,8 +87,7 @@ class RabbitMQ {
         $vhost = $config['vhost'];
         $heartbeat_interval = 0;
 
-        if ($use_heartbeat)
-            $heartbeat_interval = $config['heartbeat_interval'];
+        if ($use_heartbeat) $heartbeat_interval = $config['heartbeat_interval'];
 
         $rv = new RabbitMQPublisher(
             $host,
@@ -105,10 +101,7 @@ class RabbitMQ {
         return $rv;
     }
 
-    public function createConsumer(
-        RabbitMQExchange $exchange,
-        RabbitMQQueue $queue,
-        $name = "default", $use_heartbeat = false)
+    public function createConsumer(RabbitMQExchange $exchange, RabbitMQQueue $queue, $name = "default", $use_heartbeat = false)
     {
         $config = $this->getConnectionConfig($name);
         $host = $config['host'];
@@ -118,8 +111,7 @@ class RabbitMQ {
         $vhost = $config['vhost'];
         $heartbeat_interval = 0;
 
-        if ($use_heartbeat)
-            $heartbeat_interval = $config['heartbeat_interval'];
+        if ($use_heartbeat) $heartbeat_interval = $config['heartbeat_interval'];
 
         $rv = new RabbitMQConsumer(
             $host,
@@ -134,35 +126,4 @@ class RabbitMQ {
         );
         return $rv;
     }
-
-    public function createConsumerv2(
-        RabbitMQExchange $exchange,
-        RabbitMQQueue $queue,
-        $name = "default", $use_heartbeat = false)
-    {
-        $config = $this->getConnectionConfig($name);
-        $host = $config['host'];
-        $port = $config['port'];
-        $username = $config['username'];
-        $password = $config['password'];
-        $vhost = $config['vhost'];
-        $heartbeat_interval = 0;
-
-        if ($use_heartbeat)
-            $heartbeat_interval = $config['heartbeat_interval'];
-
-        $rv = new RabbitMQConsumerv2(
-            $host,
-            $port,
-            $username,
-            $password,
-            $vhost,
-            $heartbeat_interval,
-            $exchange,
-            $queue,
-            $this->logger
-        );
-        return $rv;
-    }
-
 }

@@ -1,8 +1,10 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 use PhpAmqpLib\Message\AMQPMessage;
 
-class RabbitMQConsumer {
+class RabbitMQConsumer
+{
 
     protected $logger = null;
 
@@ -33,7 +35,8 @@ class RabbitMQConsumer {
         $host, $port, $username, $password,
         $vhost, $heartbeat_interval,
         RabbitMQExchange $exchange,
-        RabbitMQQueue $queue, $logger) {
+        RabbitMQQueue $queue, $logger)
+    {
 
         $this->host = $host;
         $this->port = $port;
@@ -57,15 +60,18 @@ class RabbitMQConsumer {
         $this->logger = $logger;
     }
 
-    public function setNetworkRecovery($recover) {
+    public function setNetworkRecovery($recover)
+    {
         $this->network_recovery = $recover;
     }
 
-    public function setTopologyRecovery($recover) {
+    public function setTopologyRecovery($recover)
+    {
         $this->topology_recovery = $recover;
     }
 
-    public function setupTopology() {
+    public function setupTopology()
+    {
         $chan = $this->getChannel();
 
         $chan->exchange_declare(
@@ -93,7 +99,8 @@ class RabbitMQConsumer {
 
     }
 
-    public function getChannel() {
+    public function getChannel()
+    {
         if ($this->channel == null) {
             $amqp = $this->broker->getConnection();
             $this->channel = $amqp->channel();
@@ -101,11 +108,11 @@ class RabbitMQConsumer {
         return $this->channel;
     }
 
-    public function reconnect() {
+    public function reconnect()
+    {
         try {
             $this->destroy();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error($e);
         }
 
@@ -121,8 +128,7 @@ class RabbitMQConsumer {
                 );
                 $this->broker = $inst;
                 return;
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error($e);
                 sleep(1);
             }
@@ -162,8 +168,7 @@ class RabbitMQConsumer {
         while (count($chan->callbacks)) {
             try {
                 $chan->wait();
-            }
-            catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->warning($e);
                 if ($this->network_recovery) {
                     $this->logger->warning("begin reconnect");
@@ -184,7 +189,8 @@ class RabbitMQConsumer {
         }
     }
 
-    public function destroy() {
+    public function destroy()
+    {
         $chan = $this->getChannel();
         $this->channel = null;
         $broker = $this->broker;

@@ -1,4 +1,5 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 use Illuminate\Support\ServiceProvider;
 

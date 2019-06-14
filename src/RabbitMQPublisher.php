@@ -1,8 +1,11 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
-class RabbitMQPublisher {
+class RabbitMQPublisher
+{
 
     protected $logger = null;
 
@@ -11,7 +14,8 @@ class RabbitMQPublisher {
 
     public function __construct(
         $host, $port, $username, $password,
-        $vhost, $heartbeat_interval, $logger) {
+        $vhost, $heartbeat_interval, $logger)
+    {
         $inst = new RabbitMQBroker(
             $host,
             $port,
@@ -24,7 +28,8 @@ class RabbitMQPublisher {
         $this->logger = $logger;
     }
 
-    public function getChannel() {
+    public function getChannel()
+    {
         if ($this->channel == null) {
             $amqp = $this->broker->getConnection();
             $this->channel = $amqp->channel();
@@ -32,21 +37,63 @@ class RabbitMQPublisher {
         return $this->channel;
     }
 
-    public function sendMessage($body, $exchange, $routingKey, $encode = true) {
+    public function sendMessage($body, $exchange, $routingKey, $encode = true)
+    {
         $payload = $body;
-        if ($encode)
-            $payload = json_encode($body);
-
+        if ($encode) $payload = json_encode($body);
         $channel = $this->getChannel();
-
         $message = new AMQPMessage($payload, array(
-            "content_type" => "text/plain",
+            "content_type"  => "text/plain",
             "delivery_mode" => 2
         ));
         $channel->basic_publish($message, $exchange, $routingKey);
     }
 
-    public function destroy() {
+    /**
+     * 生成delay MQ
+     * @param $body
+     * @param $exchange
+     * @param $routingKey
+     * @param $delayTime
+     * @param bool $encode
+     */
+    public function sendDelayMessage($body, $exchange, $routingKey, $delayTime, $encode = true)
+    {
+        $payload = $body;
+        if ($encode) $payload = json_encode($body);
+        $channel = $this->getChannel();
+        $channel->exchange_declare(
+            $exchange,
+            'x-delayed-message',
+            false,
+            true,
+            false,
+            false,
+            false,
+            new AMQPTable(
+                ["x-delayed-type" => "topic"]
+            )
+        );
+        $channel->queue_declare(
+            $routingKey,
+            false,
+            true,
+            false,
+            false,
+            false,
+            new AMQPTable(
+                ["x-delayed-type" => "topic"]
+            )
+        );
+        $channel->queue_bind($routingKey, $exchange, $routingKey);
+        $headers = new AMQPTable(array("x-delay" => $delayTime * 1000));
+        $message = new AMQPMessage($payload, array('delivery_mode' => 2));
+        $message->set('application_headers', $headers);
+        $channel->basic_publish($message, $exchange, $routingKey);
+    }
+
+    public function destroy()
+    {
         $chan = $this->getChannel();
         $chan->close();
         $this->channel = null;

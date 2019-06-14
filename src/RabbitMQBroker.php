@@ -1,12 +1,14 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 use PhpAmqpLib\Connection\AMQPConnection;
 
-class RabbitMQBroker {
+class RabbitMQBroker
+{
 
     protected $connection = null;
 
-    public function __construct (
+    public function __construct(
         $host,
         $port,
         $username = 'guest',
@@ -39,7 +41,7 @@ class RabbitMQBroker {
         $this->connection = $connection;
     }
 
-    public function getConnection ()
+    public function getConnection()
     {
         return $this->connection;
     }

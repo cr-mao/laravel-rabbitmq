@@ -3,13 +3,13 @@
   "type": "library",
   "authors": [
     {
-      "name": "qianka",
-      "email": "postmaster@qianka.com"
+      "name": "zhang.jiang",
+      "email": "zhang.jiang@qianka.com"
     }
   ],
   "require": {
 		"illuminate/support": "~5",
-		"qianka/php-amqplib": "2.6.3.1",
+		"php-amqplib/php-amqplib": "dev-dev",
 		"monolog/monolog": "~1",
 		"php": ">=5.3.0"
 	},

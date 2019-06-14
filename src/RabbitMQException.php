@@ -1,4 +1,5 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 class RabbitMQException extends Exception
 {

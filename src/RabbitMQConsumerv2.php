@@ -1,8 +1,10 @@
-<?php namespace Qianka\RabbitMQ;
+<?php
+namespace Qianka\RabbitMQ;
 
 use PhpAmqpLib\Message\AMQPMessage;
 
-class RabbitMQConsumerv2 {
+class RabbitMQConsumerv2
+{
 
     protected $logger = null;
 
@@ -34,7 +36,8 @@ class RabbitMQConsumerv2 {
         $host, $port, $username, $password,
         $vhost, $heartbeat_interval,
         RabbitMQExchange $exchange,
-        RabbitMQQueue $queue, $logger) {
+        RabbitMQQueue $queue, $logger)
+    {
 
         $this->host = $host;
         $this->port = $port;
@@ -58,19 +61,23 @@ class RabbitMQConsumerv2 {
         $this->logger = $logger;
     }
 
-    public function setNetworkRecovery($recover) {
+    public function setNetworkRecovery($recover)
+    {
         $this->network_recovery = $recover;
     }
 
-    public function setTopologyRecovery($recover) {
+    public function setTopologyRecovery($recover)
+    {
         $this->topology_recovery = $recover;
     }
 
-    public function setPostErrorHook($func) {
+    public function setPostErrorHook($func)
+    {
         $this->post_error_hook = $func;
     }
 
-    public function setupTopology() {
+    public function setupTopology()
+    {
         $chan = $this->getChannel();
 
         $chan->exchange_declare(
@@ -98,7 +105,8 @@ class RabbitMQConsumerv2 {
 
     }
 
-    public function getChannel() {
+    public function getChannel()
+    {
         if ($this->channel == null) {
             $amqp = $this->broker->getConnection();
             $this->channel = $amqp->channel();
@@ -106,11 +114,11 @@ class RabbitMQConsumerv2 {
         return $this->channel;
     }
 
-    public function reconnect() {
+    public function reconnect()
+    {
         try {
             $this->destroy();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error($e);
         }
 
@@ -126,8 +134,7 @@ class RabbitMQConsumerv2 {
                 );
                 $this->broker = $inst;
                 return;
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error($e);
                 sleep(1);
             }
@@ -175,8 +182,7 @@ class RabbitMQConsumerv2 {
         while (count($chan->callbacks)) {
             try {
                 $chan->wait();
-            }
-            catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->warning($e);
                 if ($this->network_recovery) {
                     $this->logger->warning("begin reconnect");
@@ -201,15 +207,15 @@ class RabbitMQConsumerv2 {
                 if ($this->post_error_hook) {
                     call_user_func_array(
                         $this->post_error_hook, array($e));
-                }
-                else {
+                } else {
                     throw $e;
                 }
             }
         }
     }
 
-    public function destroy() {
+    public function destroy()
+    {
         $chan = $this->getChannel();
         $this->channel = null;
         $broker = $this->broker;
