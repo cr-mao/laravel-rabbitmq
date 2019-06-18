@@ -37,6 +37,13 @@ class RabbitMQPublisher
         return $this->channel;
     }
 
+    /**
+     * 生成 topic MQ
+     * @param $body
+     * @param $exchange
+     * @param $routingKey
+     * @param bool $encode
+     */
     public function sendMessage($body, $exchange, $routingKey, $encode = true)
     {
         $payload = $body;
@@ -57,7 +64,7 @@ class RabbitMQPublisher
      * @param $delayTime
      * @param bool $encode
      */
-    public function sendDelayMessage($body, $exchange, $routingKey, $delayTime, $encode = true)
+    public function sendDelayMessage($body, $exchange, $routingKey, $delayTime, $encode = true, $queue = '')
     {
         $payload = $body;
         if ($encode) $payload = json_encode($body);
@@ -74,18 +81,22 @@ class RabbitMQPublisher
                 ["x-delayed-type" => "topic"]
             )
         );
-        $channel->queue_declare(
-            $routingKey,
-            false,
-            true,
-            false,
-            false,
-            false,
-            new AMQPTable(
-                ["x-delayed-type" => "topic"]
-            )
-        );
-        $channel->queue_bind($routingKey, $exchange, $routingKey);
+
+        if (!empty($queue)) {
+            $channel->queue_declare(
+                $queue,
+                false,
+                true,
+                false,
+                false,
+                false,
+                new AMQPTable(
+                    ["x-delayed-type" => "topic"]
+                )
+            );
+            $channel->queue_bind($queue, $exchange, $routingKey);
+        }
+
         $headers = new AMQPTable(array("x-delay" => $delayTime * 1000));
         $message = new AMQPMessage($payload, array('delivery_mode' => 2));
         $message->set('application_headers', $headers);
