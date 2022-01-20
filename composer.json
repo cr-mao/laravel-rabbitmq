@@ -1,21 +1,21 @@
 {
-  "name": "qianka/laravel-rabbitmq",
+  "name": "crmao/laravel-rabbitmq",
   "type": "library",
   "authors": [
     {
-      "name": "zhang.jiang",
-      "email": "zhang.jiang@qianka.com"
+      "name": "mao.zhongyu",
+      "email": "crmao595106153@126.com"
     }
   ],
   "require": {
 		"illuminate/support": "~5",
-        "qianka/php-amqplib": "2.6.3.1",
+        "crmao/php-amqplib": "2.6.3.1",
 		"monolog/monolog": "~1",
-		"php": ">=5.3.0"
+		"php": ">=5.6.0"
 	},
 	"autoload": {
 		"psr-4": {
-			"Qianka\\RabbitMQ\\": "src"
+			"PayCenter\\RabbitMQ\\": "src"
 		}
 	}
 }

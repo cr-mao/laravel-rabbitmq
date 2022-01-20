@@ -1,5 +1,5 @@
 <?php
-namespace Qianka\RabbitMQ;
+namespace PayCenter\RabbitMQ;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +12,7 @@ class RabbitMQServiceProvider extends ServiceProvider
 
     public function register ()
     {
-        $this->app->bind('Qianka\RabbitMQ\RabbitMQ', function ($app) {
+        $this->app->bind('PayCenter\RabbitMQ\RabbitMQ', function ($app) {
             $config = $app['config']->get("rabbitmq");
             return new RabbitMQ($config);
         });

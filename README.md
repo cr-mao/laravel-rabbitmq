@@ -1,4 +1,4 @@
-## RabbitMQ Binding for Laravel 5
+## RabbitMQ Binding for Laravel 5 or 6
 
 
 ### install
@@ -16,7 +16,7 @@ add to `composer.json`
 
   "require": {
     ...
-    "qianka/laravel-rabbitmq": "dev-master",
+    "crmao/laravel-rabbitmq": "dev-master",
     ...
   }
 ```
@@ -24,13 +24,13 @@ add to `composer.json`
 Add the Service Provider to `config/app.php`
 
 ```
-Qianka\RabbitMQ\RabbitMQServiceProvider::class,
+PayCenter\RabbitMQ\RabbitMQServiceProvider::class,
 ```
 
 Add the Facade to `config/app.php`
 
 ```
-"RabbitMQ" => Qianka\RabbitMQ\Facades\RabbitMQ::class,
+"RabbitMQ" => PayCenter\RabbitMQ\Facades\RabbitMQ::class,
 ```
 
 add `config/rabbitmq.php`

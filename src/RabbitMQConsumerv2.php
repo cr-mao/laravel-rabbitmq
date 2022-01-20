@@ -1,5 +1,5 @@
 <?php
-namespace Qianka\RabbitMQ;
+namespace PayCenter\RabbitMQ;
 
 use PhpAmqpLib\Message\AMQPMessage;
 

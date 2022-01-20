@@ -1,6 +1,6 @@
 <?php
-namespace Qianka\RabbitMQ;
+namespace PayCenter\RabbitMQ;
 
-class RabbitMQException extends Exception
+class RabbitMQException extends \Exception
 {
 }
