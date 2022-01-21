@@ -65,6 +65,7 @@ function process_message($message)
 {
     $payload = json_decode($message->body, true);
     print_r($payload);
+    //业务处理
     # 通知MQ
     $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
 }
