@@ -8,7 +8,7 @@ add to `composer.json`
 ```
   "require": {
     ...
-    "crmao/laravel-rabbitmq": "1.0.0",
+    "crmao/laravel-rabbitmq": "3.0.0",
     ...
   }
 ```
