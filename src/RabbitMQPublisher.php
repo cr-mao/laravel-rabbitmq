@@ -67,7 +67,7 @@ class RabbitMQPublisher
      * @param $delayTime
      * @param bool $encode
      */
-    public function sendDelayMessage($body, $exchange,$dead_exchange,$delay_queue, $dead_queue,$routingKey, $delayTime, $encode = true)
+    public function sendDelayMessage($body, $exchange,$dead_exchange,$delay_queue, $dead_queue, $delayTime, $encode = true)
     {
         $payload = $body;
         if ($encode) $payload = json_encode($body);
@@ -94,7 +94,7 @@ class RabbitMQPublisher
         ]));
 
         //绑定延迟队列到正常交换机上
-        $channel->queue_bind($delay_queue,$exchange,$routingKey);
+        $channel->queue_bind($delay_queue,$exchange);
 
         //声明一个死信队列
         $channel->queue_declare($dead_queue,false,true,false,false,false);
@@ -104,7 +104,7 @@ class RabbitMQPublisher
 
 
         $message = new AMQPMessage($payload,['delivery_mode'=>AMQPMessage::DELIVERY_MODE_PERSISTENT]);
-        $channel->basic_publish($message,$exchange,$routingKey);
+        $channel->basic_publish($message,$exchange);
     }
 
 

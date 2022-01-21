@@ -17,12 +17,11 @@ sendDelayMQ(array(
     "tmp_mao_dead_exchange",
         "tmp_mao_queue_2",
                 "tmp_mao_dead_queue",
-            "tmp_mao_queue#",
                 5
 );
 
 
-function sendDelayMQ($pubData, $exchange,$deadexchange,$queue,$deadQuery, $routingKey, $delayTime = 1)
+function sendDelayMQ($pubData, $exchange,$deadexchange,$queue,$deadQuery,  $delayTime = 1)
 {
     $config = array(
         "connections"=>array(
@@ -38,6 +37,6 @@ function sendDelayMQ($pubData, $exchange,$deadexchange,$queue,$deadQuery, $routi
     );
     $mq = new RabbitMQ($config);
     $pub = $mq->createPublisher("default");
-    $pub->sendDelayMessage($pubData, $exchange,$deadexchange,$queue,$deadQuery, $routingKey,$delayTime);
+    $pub->sendDelayMessage($pubData, $exchange,$deadexchange,$queue,$deadQuery, $delayTime);
     $pub->destroy();
 }

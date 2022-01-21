@@ -29,19 +29,17 @@ add `config/rabbitmq.php`
 
 ```php
 <?php
-
 return [
-  "default" => [
-    "host" => "127.0.0.1",
-    "port" => 5672,
-    "username" => "guest",
-    "password" => "guest",
-    "vhost" => "/",
-    "heartbeat_interval" => 30,
-  ],
-  "somethingElse" => [
-    ...
-  ],
+    "connections" => [
+        "default" => [
+            "host" => '127.0.0.1',
+            "port" => 5672,
+            "username" => 'guest',
+            "password" => 'guest',
+            "vhost" => '/',
+            "heartbeat_interval" => 120,
+        ]
+    ]
 ];
 ```
 
