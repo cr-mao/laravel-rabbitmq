@@ -1,4 +1,4 @@
-## RabbitMQ Binding for Laravel 5 or 6
+## RabbitMQ Binding for Laravel  6
 
 
 ### install
