@@ -1,6 +1,7 @@
 {
   "name": "crmao/laravel-rabbitmq",
   "type": "library",
+  "license": "MIT",
   "authors": [
     {
       "name": "mao.zhongyu",
