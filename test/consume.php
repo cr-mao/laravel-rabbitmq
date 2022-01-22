@@ -57,7 +57,7 @@ $consumer->consume(
 $consumer->blockingConsume();
 
 /**
- * 拼多多无效订单处理
+ * 业务处理
  * @param $message
  * @throws \Exception
  */

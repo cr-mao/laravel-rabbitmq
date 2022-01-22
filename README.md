@@ -54,10 +54,10 @@ if you are not use laravel ,how to user  you can see  [test](https://github.com/
 ```php
 
 //延迟消息发送
-function sendDelayMQ($pubData, $exchange,$deadexchange,$queue,$deadQuery, $routingKey, $delayTime = 1)
+function sendDelayMQ($pubData, $exchange,$deadexchange,$queue,$deadQuery,  $delayTime = 1)
 {
     $pub = RabbitMQ::createPublisher("default");
-    $pub->sendDelayMessage($pubData, $exchange,$deadexchange,$queue,$deadQuery, $routingKey,$delayTime);
+    $pub->sendDelayMessage($pubData, $exchange,$deadexchange,$queue,$deadQuery, $delayTime);
     $pub->destroy();
 }
 
